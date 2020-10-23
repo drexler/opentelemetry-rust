@@ -242,7 +242,7 @@ impl api::trace::Tracer for Tracer {
             if let Some(mut events) = builder.message_events {
                 message_events.append_vec(&mut events);
             }
-            let status_code = builder.status_code.unwrap_or(api::trace::StatusCode::OK);
+            let status_code = builder.status_code.unwrap_or(api::trace::StatusCode::Ok);
             let status_message = builder.status_message.unwrap_or_else(String::new);
             let resource = config.resource.clone();
 

@@ -584,7 +584,7 @@ fn build_span_tags(
     }
 
     // Ensure error status is set
-    if status_code != api::trace::StatusCode::OK && !user_overrides.error {
+    if status_code != api::trace::StatusCode::Ok && !user_overrides.error {
         tags.push(api::Key::new(ERROR).bool(true).into())
     }
 

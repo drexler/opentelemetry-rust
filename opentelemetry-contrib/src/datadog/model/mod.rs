@@ -103,7 +103,7 @@ mod tests {
             attributes,
             message_events,
             links,
-            status_code: api::trace::StatusCode::OK,
+            status_code: api::trace::StatusCode::Ok,
             status_message: String::new(),
             resource: Arc::new(sdk::Resource::default()),
             instrumentation_lib: InstrumentationLibrary::new("component", None),

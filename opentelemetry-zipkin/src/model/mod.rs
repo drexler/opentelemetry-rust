@@ -33,23 +33,10 @@ impl Into<annotation::Annotation> for api::trace::Event {
 /// Converts StatusCode to str
 fn from_statuscode_to_str(status_code: api::trace::StatusCode) -> &'static str {
     match status_code {
-        api::trace::StatusCode::OK => "OK",
-        api::trace::StatusCode::Canceled => "CANCELLED",
-        api::trace::StatusCode::Unknown => "UNKNOWN",
-        api::trace::StatusCode::InvalidArgument => "INVALID_ARGUMENT",
-        api::trace::StatusCode::DeadlineExceeded => "DEADLINE_EXCEEDED",
-        api::trace::StatusCode::NotFound => "NOT_FOUND",
-        api::trace::StatusCode::AlreadyExists => "ALREADY_EXISTS",
-        api::trace::StatusCode::PermissionDenied => "PERMISSION_DENIED",
-        api::trace::StatusCode::ResourceExhausted => "RESOURSE_EXHAUSTED",
-        api::trace::StatusCode::FailedPrecondition => "FAILED_PRECONDITION",
-        api::trace::StatusCode::Aborted => "ABORTED",
-        api::trace::StatusCode::OutOfRange => "OUT_OF_RANGE",
-        api::trace::StatusCode::Unimplemented => "UNINPLEMENTED",
-        api::trace::StatusCode::Internal => "INTERNAL",
-        api::trace::StatusCode::Unavailable => "UNAVAILABLE",
-        api::trace::StatusCode::DataLoss => "DATA_LOSS",
-        api::trace::StatusCode::Unauthenticated => "UNAUTHENTICATED",
+        api::trace::StatusCode::Ok => "OK",
+        api::trace::StatusCode::Error => "ERROR",
+        api::trace::StatusCode::Unset => "UNSET",
+
     }
 }
 
