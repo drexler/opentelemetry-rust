@@ -128,6 +128,7 @@ pub struct PipelineBuilder {
     process: Process,
     max_packet_size: Option<usize>,
     config: Option<sdk::trace::Config>,
+    timeout: Option<Duration>,
 }
 
 impl Default for PipelineBuilder {
@@ -150,6 +151,7 @@ impl Default for PipelineBuilder {
             },
             max_packet_size: None,
             config: None,
+            timeout: None
         };
 
         // Override above defaults with env vars if set
@@ -240,6 +242,13 @@ impl PipelineBuilder {
     /// Assign the max packet size in bytes. Jaeger defaults is 65000.
     pub fn with_max_packet_size(mut self, max_packet_size: usize) -> Self {
         self.max_packet_size = Some(max_packet_size);
+        self
+    }
+
+
+    /// Assign the timeout duration. Jaeger defaults is 10s.
+    pub fn with_timeout(mut self, timeout: Duration) -> Self {
+        self.timeout = Some(timeout);
         self
     }
 

@@ -1,5 +1,7 @@
 use crate::PipelineBuilder;
 use std::env;
+use std::str::FromStr;
+use std::time::Duration;
 
 /// The name under which Jaeger will group reported spans.
 const ENV_SERVICE_NAME: &str = "OTEL_SERVICE_NAME";
@@ -25,6 +27,11 @@ const ENV_USER: &str = "OTEL_EXPORTER_JAEGER_USER";
 #[cfg(feature = "collector_client")]
 const ENV_PASSWORD: &str = "OTEL_EXPORTER_JAEGER_PASSWORD";
 
+/// Max waiting time for the backend to process each span or metrics batch. The defaults is 10 seconds.
+const OTEL_EXPORTER_JAEGER_TIMEOUT: &str = "OTEL_EXPORTER_JAEGER_TIMEOUT";
+/// Default waiting time to send a trace or metrics batch.
+const OTEL_EXPORTER_JAEGER_TIMEOUT_DEFAULT: u64 = 10;
+
 /// Assign builder attributes from env
 pub(crate) fn assign_attrs(mut builder: PipelineBuilder) -> PipelineBuilder {
     if let Some(service_name) = env::var(ENV_SERVICE_NAME).ok().filter(|v| !v.is_empty()) {
@@ -34,6 +41,14 @@ pub(crate) fn assign_attrs(mut builder: PipelineBuilder) -> PipelineBuilder {
     if let (Ok(host), Ok(port)) = (env::var(ENV_AGENT_HOST), env::var(ENV_AGENT_PORT)) {
         builder = builder.with_agent_endpoint(format!("{}:{}", host.trim(), port.trim()));
     }
+
+    let timeout = match std::env::var(OTEL_EXPORTER_JAEGER_TIMEOUT) {
+        Ok(val) => u64::from_str(&val).unwrap_or(OTEL_EXPORTER_JAEGER_TIMEOUT_DEFAULT),
+        Err(_) =>  OTEL_EXPORTER_JAEGER_TIMEOUT_DEFAULT,
+    };
+
+    builder = builder.with_timeout(Duration::from_secs(timeout));
+
 
     #[cfg(feature = "collector_client")]
     {
