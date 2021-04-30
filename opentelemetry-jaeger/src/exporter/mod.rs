@@ -353,12 +353,13 @@ impl PipelineBuilder {
             #[cfg(feature = "isahc_collector_client")]
             let client = self.client.unwrap_or({
                 let mut builder = isahc::HttpClient::builder();
-                if let (Some(username), Some(password)) =
-                    (self.collector_username, self.collector_password)
+                if let (Some(username), Some(password), Some(timeout)) =
+                    (self.collector_username, self.collector_password, self.timeout)
                 {
                     builder = builder
                         .authentication(isahc::auth::Authentication::basic())
-                        .credentials(isahc::auth::Credentials::new(username, password));
+                        .credentials(isahc::auth::Credentials::new(username, password))
+                        .timeout(timeout);
                 }
 
                 Box::new(builder.build().map_err(|err| {
