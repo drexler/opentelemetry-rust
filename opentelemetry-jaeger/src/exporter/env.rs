@@ -44,11 +44,10 @@ pub(crate) fn assign_attrs(mut builder: PipelineBuilder) -> PipelineBuilder {
 
     let timeout = match std::env::var(OTEL_EXPORTER_JAEGER_TIMEOUT) {
         Ok(val) => u64::from_str(&val).unwrap_or(OTEL_EXPORTER_JAEGER_TIMEOUT_DEFAULT),
-        Err(_) =>  OTEL_EXPORTER_JAEGER_TIMEOUT_DEFAULT,
+        Err(_) => OTEL_EXPORTER_JAEGER_TIMEOUT_DEFAULT,
     };
 
     builder = builder.with_timeout(Duration::from_secs(timeout));
-
 
     #[cfg(feature = "collector_client")]
     {

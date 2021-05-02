@@ -151,7 +151,7 @@ impl Default for PipelineBuilder {
             },
             max_packet_size: None,
             config: None,
-            timeout: None
+            timeout: None,
         };
 
         // Override above defaults with env vars if set
@@ -244,7 +244,6 @@ impl PipelineBuilder {
         self.max_packet_size = Some(max_packet_size);
         self
     }
-
 
     /// Assign the timeout duration. Jaeger defaults is 10s.
     pub fn with_timeout(mut self, timeout: Duration) -> Self {
@@ -353,9 +352,11 @@ impl PipelineBuilder {
             #[cfg(feature = "isahc_collector_client")]
             let client = self.client.unwrap_or({
                 let mut builder = isahc::HttpClient::builder();
-                if let (Some(username), Some(password), Some(timeout)) =
-                    (self.collector_username, self.collector_password, self.timeout)
-                {
+                if let (Some(username), Some(password), Some(timeout)) = (
+                    self.collector_username,
+                    self.collector_password,
+                    self.timeout,
+                ) {
                     builder = builder
                         .authentication(isahc::auth::Authentication::basic())
                         .credentials(isahc::auth::Credentials::new(username, password))
@@ -386,9 +387,11 @@ impl PipelineBuilder {
                     feature = "reqwest_blocking_collector_client"
                 ))]
                 let mut builder = reqwest::blocking::ClientBuilder::new();
-                if let (Some(username), Some(password), Some(timeout)) =
-                    (self.collector_username, self.collector_password, self.timeout)
-                {
+                if let (Some(username), Some(password), Some(timeout)) = (
+                    self.collector_username,
+                    self.collector_password,
+                    self.timeout,
+                ) {
                     let mut map = http::HeaderMap::with_capacity(1);
                     let auth_header_val =
                         headers::Authorization::basic(username.as_str(), password.as_str());
