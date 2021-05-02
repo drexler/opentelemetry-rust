@@ -386,14 +386,14 @@ impl PipelineBuilder {
                     feature = "reqwest_blocking_collector_client"
                 ))]
                 let mut builder = reqwest::blocking::ClientBuilder::new();
-                if let (Some(username), Some(password)) =
-                    (self.collector_username, self.collector_password)
+                if let (Some(username), Some(password), Some(timeout)) =
+                    (self.collector_username, self.collector_password, self.timeout)
                 {
                     let mut map = http::HeaderMap::with_capacity(1);
                     let auth_header_val =
                         headers::Authorization::basic(username.as_str(), password.as_str());
                     map.insert(http::header::AUTHORIZATION, auth_header_val.0.encode());
-                    builder = builder.default_headers(map);
+                    builder = builder.default_headers(map).timeout(timeout);
                 }
                 let client: Box<dyn HttpClient> =
                     Box::new(builder.build().map_err::<crate::Error, _>(Into::into)?);
