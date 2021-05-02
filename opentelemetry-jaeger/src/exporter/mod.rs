@@ -16,9 +16,12 @@ use async_trait::async_trait;
 #[cfg(any(feature = "collector_client", feature = "wasm_collector_client"))]
 use collector::CollectorAsyncClientHttp;
 
-#[cfg(feature = "isahc_collector_client")]
+#[cfg(any(feature = "isahc_collector_client", feature = "surf_collector_client"))]
 #[allow(unused_imports)] // this is actually used to configure authentication
 use isahc::prelude::Configurable;
+
+#[cfg(feature = "surf_collector_client")]
+use http_client::isahc::IsahcClient;
 
 use opentelemetry::sdk::export::ExportError;
 use opentelemetry::trace::TraceError;
@@ -410,11 +413,23 @@ impl PipelineBuilder {
                 not(feature = "reqwest_blocking_collector_client")
             ))]
             let client = self.client.unwrap_or({
-                let client = if let (Some(username), Some(password)) =
-                    (self.collector_username, self.collector_password)
-                {
+                let client = if let (Some(username), Some(password), Some(timeout)) = (
+                    self.collector_username,
+                    self.collector_password,
+                    self.timeout,
+                ) {
+                    // Note: Currently Surf lacks support for configuring timeouts. Reference: https://github.com/http-rs/surf/issues/274
+                    // Until support for that is implemented, we use Isahc as the backend http client
+                    // if there's a timeout configured.
+                    let backing_client = isahc::HttpClient::builder()
+                        .timeout(timeout)
+                        .build()
+                        .unwrap();
+                    let http_client = IsahcClient::from_client(backing_client);
+                    let surf_client = surf::Client::with_http_client(http_client);
+
                     let auth = surf::http::auth::BasicAuth::new(username, password);
-                    surf::Client::new().with(BasicAuthMiddleware(auth))
+                    surf_client.with(BasicAuthMiddleware(auth))
                 } else {
                     surf::Client::new()
                 };

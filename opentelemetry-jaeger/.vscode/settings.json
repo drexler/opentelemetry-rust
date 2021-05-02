@@ -1,0 +1,5 @@
+{
+    "rust-analyzer.cargo.features": [
+        "wasm_collector_client"
+    ]
+}

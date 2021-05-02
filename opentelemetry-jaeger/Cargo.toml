@@ -39,6 +39,7 @@ lazy_static = "1.4"
 reqwest = { version = "0.11", default-features = false, optional = true }
 headers = { version = "0.3.2", optional = true }
 surf = { version = "2.0", default-features = false, optional = true }
+http-client = "6.3.5"
 
 [dev-dependencies]
 bytes = "1"
@@ -64,7 +65,7 @@ collector_client = ["http", "opentelemetry-http"]
 isahc_collector_client = ["isahc", "opentelemetry-http/isahc"]
 reqwest_blocking_collector_client = ["reqwest/blocking", "collector_client", "headers", "opentelemetry-http/reqwest"]
 reqwest_collector_client = ["reqwest", "collector_client", "headers", "opentelemetry-http/reqwest"]
-surf_collector_client = ["surf", "collector_client", "opentelemetry-http/surf"]
+surf_collector_client = ["surf", "isahc", "collector_client", "opentelemetry-http/surf"]
 wasm_collector_client = [
     "base64",
     "futures-util",
